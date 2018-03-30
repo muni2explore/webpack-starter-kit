@@ -14,7 +14,7 @@ git init
 
 Step 3:
 Next install following webpack plugins by running following commands
-<pre>
+```
 npm install webpack webpack-cli webpack-dev-server autoprefixer css-loader html-webpack-plugin mini-css-extract-plugin node-sass postcss-loader precss sass-loader style-loader --save-dev
-</pre>
+```
 
