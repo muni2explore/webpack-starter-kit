@@ -1,4 +1,4 @@
-# webpack Docs
+# Webpack Starter Kit
 
 ### Step 1:
 Initialize the project with npm which creates package.json with default parameters.
