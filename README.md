@@ -16,7 +16,7 @@ git init
 Next install following webpack plugins by running following commands
 ```javascript
 
-npm install webpack webpack-cli webpack-dev-server autoprefixer css-loader html-webpack-plugin mini-css-extract-plugin node-sass postcss-loader precss sass-loader style-loader --save-dev
+npm install webpack webpack-cli webpack-dev-server autoprefixer css-loader html-webpack-plugin mini-css-extract-plugin optimize-css-assets-webpack-plugin node-sass postcss-loader precss sass-loader style-loader --save-dev
 
 ```
 
@@ -27,9 +27,10 @@ Next create webpack.config.js file in root folder of your project. Then copy pas
 var path = require("path");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
+var OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 var libraryName = 'sustainability';
 
-module.exports = {
+module.exports = (env, argv) => ({
     entry: {
         app: path.resolve(__dirname, './src/js/app.js'),
         style: path.resolve(__dirname, './src/scss/style.scss')
@@ -42,11 +43,23 @@ module.exports = {
         umdNamedDefine: true
     },
     module:{
-        rules: [{
+        
+        rules: [
+            {
+                test: /\.(ttf|eot|svg|woff|woff2|gif|eot|svg|png|jpg|jpeg)$/,
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 8192
+                        }
+                    }
+                ]
+            },{
             test: /\.scss$/,
             use: [
-                //MiniCssExtractPlugin.loader,
-                "style-loader", 
+                MiniCssExtractPlugin.loader,
+                //"style-loader", 
                 'css-loader',
                 {
                     loader: 'postcss-loader',
@@ -63,9 +76,19 @@ module.exports = {
             ],
         }]
     },
+    optimization: {
+        minimizer: argv.mode === 'production' ? [
+            new OptimizeCSSAssetsPlugin({})
+        ] : []
+    },
     plugins: [
         new HtmlWebpackPlugin({
             template: "index.html",
+            inject: "body"
+        }),
+        new HtmlWebpackPlugin({
+            filename: "test.html",
+            template: "test.html",
             inject: "body"
         }),
         new MiniCssExtractPlugin({
@@ -75,7 +98,7 @@ module.exports = {
             filename: "css/[name].css"
         })
     ]
-};
+});
 ```
 ### Step 5:
 
@@ -84,6 +107,7 @@ Finally add the following commands in the package.json of scripts section.
 ```json
 "scripts": {
     "start": "webpack-dev-server --progress --open --mode development",
+    "dev": "webpack --mode development && rimraf dist/js/style.js",
     "prod": "webpack --mode production && rimraf dist/js/style.js"
 }
 ```
