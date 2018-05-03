@@ -16,7 +16,7 @@ git init
 Next install following webpack plugins by running following commands
 ```javascript
 
-npm install webpack webpack-cli webpack-dev-server autoprefixer css-loader html-webpack-plugin mini-css-extract-plugin optimize-css-assets-webpack-plugin node-sass postcss-loader precss sass-loader style-loader --save-dev
+npm install webpack webpack-cli webpack-dev-server autoprefixer css-loader html-webpack-plugin mini-css-extract-plugin optimize-css-assets-webpack-plugin node-sass postcss-loader precss sass-loader style-loader file-loader url-loader --save-dev
 
 ```
 
