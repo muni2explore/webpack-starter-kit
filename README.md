@@ -16,7 +16,7 @@ git init
 Next install following webpack plugins by running following commands
 ```javascript
 
-npm install webpack webpack-cli webpack-dev-server autoprefixer css-loader html-webpack-plugin mini-css-extract-plugin optimize-css-assets-webpack-plugin node-sass postcss-loader precss sass-loader style-loader file-loader url-loader --save-dev
+npm install webpack webpack-cli webpack-dev-server autoprefixer css-loader html-webpack-plugin mini-css-extract-plugin optimize-css-assets-webpack-plugin node-sass postcss-loader precss sass-loader style-loader file-loader url-loader copy-webpack-plugin --save-dev
 
 ```
 
@@ -28,6 +28,7 @@ var path = require("path");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 var OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 var libraryName = 'sustainability';
 
 module.exports = (env, argv) => ({
@@ -86,17 +87,15 @@ module.exports = (env, argv) => ({
             template: "index.html",
             inject: "body"
         }),
-        new HtmlWebpackPlugin({
-            filename: "test.html",
-            template: "test.html",
-            inject: "body"
-        }),
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional
             // TODO: switch to [contenthash] as soon as MiniCssExtractPlugin supports it
             filename: "css/[name].css"
-        })
+        }),
+        argv.mode === 'production' ? new CopyWebpackPlugin([
+            { from: 'src/css/bootstrap.css', to: 'src/css/bootstrap.css' },
+        ]) : new CopyWebpackPlugin([])
     ]
 });
 ```
