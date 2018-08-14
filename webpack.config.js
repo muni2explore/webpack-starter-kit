@@ -1,9 +1,11 @@
 var path = require("path");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
+var OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+var webpack = require("webpack");
 var libraryName = 'smart-app';
 
-module.exports = {
+module.exports = (env, argv) => ({
     entry: {
         app: path.resolve(__dirname, './src/js/app.js'),
         style: path.resolve(__dirname, './src/scss/style.scss')
@@ -16,26 +18,63 @@ module.exports = {
         umdNamedDefine: true
     },
     module: {
-        rules: [{
-            test: /\.scss$/,
-            use: [
-                //MiniCssExtractPlugin.loader,
-                "style-loader",
-                'css-loader',
-                {
-                    loader: 'postcss-loader',
-                    options: {
-                        plugins: function () { // post css plugins, can be exported to postcss.config.js
-                            return [
-                                require('precss'),
-                                require('autoprefixer')
-                            ];
+        rules: [
+            {
+                test: /\.(ttf|eot|svg|woff|woff2|gif|eot|svg|png|jpg|jpeg)$/,
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 8192
                         }
                     }
-                },
-                'sass-loader'
-            ],
-        }]
+                ]
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    argv.mode === 'production' ? MiniCssExtractPlugin.loader : "style-loader",
+                    /*MiniCssExtractPlugin.loader,
+                    "style-loader",*/
+                    'css-loader',
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            plugins: function () { // post css plugins, can be exported to postcss.config.js
+                                return [
+                                    require('precss'),
+                                    require('autoprefixer')
+                                ];
+                            }
+                        }
+                    },
+                    'sass-loader'
+                ],
+            }
+        ]
+    },
+    optimization: {
+        minimizer: argv.mode === 'production' ? [
+            new OptimizeCSSAssetsPlugin({})
+        ] : [],
+        splitChunks: {
+            cacheGroups: {
+                /*vendor: {
+                    chunks: 'initial',
+                    name: 'vendor',
+                    test: 'vendor',
+                    enforce: true
+                },*/
+                vendor: {
+                    test: /node_modules/,
+                    chunks: "initial",
+                    name: "vendor",
+                    priority: 10,
+                    enforce: true
+                }
+                
+            }
+        }
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -47,6 +86,13 @@ module.exports = {
             // both options are optional
             // TODO: switch to [contenthash] as soon as MiniCssExtractPlugin supports it
             filename: "css/[name].css"
-        })
+        }),
+        /*new webpack.ProvidePlugin({
+            jQuery: 'jquery',
+            $: 'jquery',
+            jquery: 'jquery',
+            'window.jQuery': 'jquery',
+            Popper: ['popper.js', 'default']
+        })*/
     ]
-};
+});
