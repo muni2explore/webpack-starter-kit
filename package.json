@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --progress --open --mode development",
-    "prod": "webpack --mode production && rimraf dist/js/style.js"
+    "prod": "rimraf dist && webpack --mode production && rimraf dist/js/style.js"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +23,7 @@
     "precss": "^3.1.2",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.22.1",
+    "uglifyjs-webpack-plugin": "^1.3.0",
     "url-loader": "^1.0.1",
     "webpack": "^4.16.5",
     "webpack-cli": "^3.1.0",

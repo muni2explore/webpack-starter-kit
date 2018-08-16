@@ -2,10 +2,11 @@ var path = require("path");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 var OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-var webpack = require("webpack");
 var libraryName = 'smart-app';
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = (env, argv) => ({
+
     entry: {
         app: path.resolve(__dirname, './src/js/app.js'),
         style: path.resolve(__dirname, './src/scss/style.scss')
@@ -54,9 +55,13 @@ module.exports = (env, argv) => ({
         ]
     },
     optimization: {
-        minimizer: argv.mode === 'production' ? [
-            new OptimizeCSSAssetsPlugin({})
-        ] : [],
+        minimizer: function(){
+            console.log(argv.mode);
+            return argv.mode === 'production'? [
+                    new OptimizeCSSAssetsPlugin({}),
+                    new UglifyJsPlugin()
+                ]: []; 
+        }(),
         splitChunks: {
             cacheGroups: {
                 /*vendor: {
