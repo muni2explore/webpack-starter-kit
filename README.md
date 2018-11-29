@@ -25,5 +25,5 @@ npm start
 For generating build run the following command
 
 <pre>
-npm run prod
+npm run build
 </pre>
