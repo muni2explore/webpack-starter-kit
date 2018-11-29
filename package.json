@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --progress --open --mode development",
-    "prod": "rimraf dist && webpack --mode production && rimraf dist/js/style.js"
+    "build": "rimraf dist && webpack --mode production && rimraf dist/js/style.js"
   },
   "keywords": [],
   "author": "",
